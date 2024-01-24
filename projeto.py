@@ -9,8 +9,8 @@ print("Bem-vindo ao jogo de adivinhação!")
 
 nome = input("Digite seu nome: ")
 
-num_questoes = 3;
-print("{}, você terá {} opções, escolha a correta e avance a GRANDE VITÓRIA!" .format(nome, num_questoes))
+num_opcoes = 3;
+print("{}, você terá {} opções, escolha a correta e avance a GRANDE VITÓRIA!" .format(nome, num_opcoes))
 
 #Criar array com questões
 
@@ -101,19 +101,24 @@ for i, pergunta_atual in enumerate(lista_perguntas, start=1):
     print(f"\nQuestão {i}: {pergunta_atual['pergunta']}")
     for opcao in pergunta_atual['opcoes']:
         print(opcao)
+        
+    resposta_usuario = input("Escolha a opção correta (1, 2, 3): ")
 
-    resposta_usuario = input("Escolha a opção correta (1, 2, 3) ou digite 'pular' para pular a pergunta: ")
-
-    if resposta_usuario == 'PULAR':
-        print("Pulando para a próxima pergunta.")
-        continue
-
-    elif int(resposta_usuario) == int(pergunta_atual['resposta']):
+    if int(resposta_usuario) == int(pergunta_atual['resposta']):
         print("Resposta correta!\n")
         pontuacao += 1
     else:
-        print(f"Resposta incorreta. Fim do quiz.\nVocê acertou {pontuacao} perguntas.")
-        break
+        print("Resposta incorreta. Você tem outra chance.")
+        segunda_tentativa = input("Escolha a opção correta (1, 2, 3) ou digite 'pular' para a próxima pergunta: ")
+        
+        if segunda_tentativa.lower() == 'pular':
+            print("Pulando para a próxima pergunta.")
+        elif int(segunda_tentativa) == int(pergunta_atual['resposta']):
+            print("Resposta correta na segunda tentativa!\n")
+            pontuacao += 1
+        else:
+            print(f"Resposta incorreta. Fim do quiz.\nVocê acertou {pontuacao} perguntas.")
+            break
 
 if pontuacao == len(lista_perguntas):
-    print("Parabéns! {} você acertou todas as perguntas e se provou digno de ganhar o título de Sir. Python!".format(nome))
+    print("Parabéns, {}! Você acertou todas as perguntas e se provou digno de ganhar o título de Sir. Python!".format(nome))

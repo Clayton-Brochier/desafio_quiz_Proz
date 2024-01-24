@@ -10,7 +10,7 @@ print("Bem-vindo ao jogo de adivinhação!")
 nome = input("Digite seu nome: ")
 
 num_opcoes = 3;
-print("{}, você terá {} opções, escolha a correta e avance a GRANDE VITÓRIA!" .format(nome, num_opcoes))
+print("{}, você terá {} opções, escolha a correta e avance à GRANDE VITÓRIA!" .format(nome, num_opcoes))
 
 #Criar array com questões
 

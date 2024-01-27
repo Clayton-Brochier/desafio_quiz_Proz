@@ -1,0 +1,111 @@
+import logging
+import random
+import json
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+
+# Configuração do logger
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Lista de perguntas e respostas
+questions = [
+    {"question": "Qual é a capital do Brasil?", "answer": "Brasília"},
+   
+    # Adicione mais perguntas conforme necessário
+]
+
+# Dicionário para armazenar o ranking
+ranking = {}
+
+# Função de comando /start
+def start(update: Update, context: CallbackContext) -> None:
+    user_id = str(update.message.from_user.id)
+    context.user_data['score'] = 0
+    context.user_data['question_index'] = 0
+    update.message.reply_text(f"Bem-vindo ao jogo de perguntas, {update.message.from_user.first_name}!\nUse /question para começar.")
+
+# Função de comando /question
+def ask_question(update: Update, context: CallbackContext) -> None:
+    user_id = str(update.message.from_user.id)
+    if user_id not in ranking:
+        ranking[user_id] = {"username": update.message.from_user.username, "score": 0}
+
+    if context.user_data['question_index'] < len(questions):
+        question = questions[context.user_data['question_index']]["question"]
+        update.message.reply_text(f"{question}")
+        context.user_data['waiting_for_answer'] = True
+    else:
+        update.message.reply_text(f"Você respondeu todas as perguntas! Seu escore final: {context.user_data['score']}")
+        ranking[user_id]["score"] += context.user_data['score']
+        context.user_data['question_index'] = 0
+        context.user_data['score'] = 0
+
+# Função para verificar respostas
+def check_answer(update: Update, context: CallbackContext) -> None:
+    user_id = str(update.message.from_user.id)
+    if 'waiting_for_answer' in context.user_data and context.user_data['waiting_for_answer']:
+        user_answer = update.message.text
+        correct_answer = questions[context.user_data['question_index']]["answer"]
+
+        if user_answer.lower() == correct_answer.lower():
+            update.message.reply_text("Resposta correta! 🎉")
+            context.user_data['score'] += 1
+        else:
+            update.message.reply_text(f"Resposta incorreta. A resposta correta é: {correct_answer}")
+
+        context.user_data['waiting_for_answer'] = False
+        context.user_data['question_index'] += 1
+        context.user_data['score'] += 1
+
+        if context.user_data['question_index'] < len(questions):
+            ask_question(update, context)
+        else:
+            update.message.reply_text(f"Você respondeu todas as perguntas! Seu escore final: {context.user_data['score']}")
+            ranking[user_id]["score"] += context.user_data['score']
+            context.user_data['question_index'] = 0
+            context.user_data['score'] = 0
+
+# Função de comando /score
+def show_score(update: Update, context: CallbackContext) -> None:
+    user_id = str(update.message.from_user.id)
+    if user_id in ranking:
+        user_score = ranking[user_id]["score"]
+        update.message.reply_text(f"Seu escore atual: {user_score}")
+    else:
+        update.message.reply_text("Você ainda não jogou. Use /start para começar.")
+
+# Função de comando /ranking
+def show_ranking(update: Update, context: CallbackContext) -> None:
+    sorted_ranking = sorted(ranking.items(), key=lambda x: x[1]["score"], reverse=True)
+    rank_message = "Ranking:\n"
+    for i, (user_id, user_data) in enumerate(sorted_ranking, start=1):
+        rank_message += f"{i}. {user_data['username']} - {user_data['score']} pontos\n"
+    update.message.reply_text(rank_message)
+
+def main() -> None:
+    # Substitua 'SEU_TOKEN_AQUI' pelo token de API do seu bot
+    token = '6984179141:AAFNQ-nUtwJxCCtZjC-QqC-giyh3QzqpGT0'
+    updater = Updater(token)
+
+    # Obtém o despachante para registrar manipuladores
+    dp = updater.dispatcher
+
+    # Registra os manipuladores de comando e mensagens
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("question", ask_question))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, check_answer))
+    dp.add_handler(CommandHandler("score", show_score))
+    dp.add_handler(CommandHandler("ranking", show_ranking))
+
+    # Inicia o bot
+    updater.start_polling()
+
+    # Espera o bot ser encerrado
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
+
+
+# @QuizTeste_bot

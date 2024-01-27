@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Python Proz</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="box">
+        <h1>Quiz sobre Python</h1>
+        <h2>Você será desafiado por questões relacionadas a programação na linguagem Python, está preparado?</h2>
+        <img class="logo-python" src=""/>
+        <div class="buttons-container">
+            <button>
+                <a href=https://www.youtube.com/watch?v=e4SW7SMrBB8>Sim</a>
+            </button>
+            <button id = "no">Não</button>
+        </div>
+
+    </div>
+</body>
+<script>
+    let button = document.getElementById('no');
+    let height = window.innerHeight - 50;
+    let width = window.innerWidth -50;
+
+    button.addEventListener('mouseover', function (){
+        button.style.position = "absolute";
+        button.style.top = Math.random() * height + "px";
+        button.style.left = Math.random() * width + "px";
+    })
+</script>
+</html>

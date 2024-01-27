@@ -1,0 +1,39 @@
+/*"RESET de estilos para normalizar as margens e preenchimentos padrão do navegador*/
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*Centralizar itens na página*/
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    margin: 15px;
+    background-image: linear-gradient(135deg, blue, yellow, blue, yellow);
+
+}
+a {
+text-decoration: none;
+}
+
+
+
+.buttons-container {
+display: inline-flex;
+justify-content: space-between 25px;
+height: 150px;
+width: 150px;
+}
+
+button{
+height: 50px;
+width: 80px;
+background: greenyellow;
+border-radius: 5px;
+color: blue;
+font-weight: 600;
+}
